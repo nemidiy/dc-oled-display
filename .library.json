@@ -1,0 +1,36 @@
+{
+    "name": "gc oled screen lib", 
+    "version": "0.0.1", 
+    "keywords": [
+        "display, screen"
+    ], 
+    "description": "Manages the generic screen for the gj devices", 
+    "frameworks": [
+        "arduino"
+    ], 
+    "platforms": [
+        "atmelavr", 
+        "espressif32", 
+        "espressif8266"
+    ], 
+    "authors": [
+        {
+            "email": "n.r.emiliani@gmail.com", 
+            "url": null, 
+            "maintainer": true, 
+            "name": "Nemilabs"
+        }
+    ], 
+    "homepage": null, 
+    "export": {
+        "include": null, 
+        "exclude": [
+            "extras", 
+            "docs", 
+            "tests", 
+            "test", 
+            "*.doxyfile", 
+            "*.pdf"
+        ]
+    }
+}
