@@ -150,13 +150,25 @@ void Screen::draw_body_message(uint8_t size){
 }
 
 void Screen::draw_alert(uint8_t x, uint8_t y){
-  if(alert_on){
+  static int cycles = 0;
+  static bool blink = true;
+
+  if(alert_on && blink){
     display->fillRect(x,     y     , 2, 4, WHITE);
     display->fillRect(x,     y + 6 , 2, 2, WHITE);
     display->drawCircle(x,   y + 3 , 7, WHITE);
   }else{
     display->fillRect(x - 7 , y - 5, 14, 14, BLACK);
   }
+
+  if(cycles == 15 && blink){
+    blink = false;
+    cycles = 0;
+  }else if(cycles == 10 && !blink){
+    blink = true;
+    cycles = 0;
+  }
+  ++cycles;
 }
 
 
