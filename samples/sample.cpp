@@ -11,7 +11,7 @@ Adafruit_SSD1306 display(128, 64);
 gj::utils::Screen screen(&display);
 
 void setup(){
-  screen.set_header_message("SUPER DEVICE FROM HELL");
+  screen.set_scrolling_message("SUPER DEVICE FROM HELL");
   screen.set_alert();
 }
 

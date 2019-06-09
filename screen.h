@@ -1,11 +1,15 @@
 #ifndef __GJ_UTILS_SCREEN_H__
 #define __GJ_UTILS_SCREEN_H__
 
+#include <vector>
+#include <functional>
+
+
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-#define HEADER_MESSAGE_MAX_SIZE 13
-#define HEADER_MESSAGE_CLOCK 10
+#define SCROLL_MESSAGE_MAX_SIZE 13
+#define SCROLL_MESSAGE_CLOCK 10
 
 namespace gj {
 
@@ -13,25 +17,47 @@ namespace utils{
 
 struct Screen{
 
-  Screen(Adafruit_SSD1306* display);
+  typedef enum {
+    UP    = 0,
+    DOWN  = 1,
+    LEFT  = 2,
+    RIGHT = 3,
+    CLICK = 4,
+    NONE  = 10
+  } joystick_event;
+
+  typedef std::function<void (struct Screen *screen, void* param)> canvas_func;
+
+  Screen(Adafruit_SSD1306* display,
+        int joystick_x_pin  = -1,
+        int joystick_y_pin  = -1,
+        int joystick_sw_pin = -1);
 
   void render();
 
   void set_signal_level(uint8_t level);
 
-  void set_header_message(const std::string& message);
-
-  void set_body_message(const std::string& message);
+  void draw_wifi_signal(uint8_t level);
 
   void set_alert(bool on=true);
 
-  void draw_wifi_signal(uint8_t level);
+  void draw_alert(uint8_t x = 7, uint8_t y = 4);
 
-  void draw_header_message();
+  void set_scrolling_message(const std::string& message);
 
-  void draw_body_message();
+  void draw_scrolling_message(uint8_t x, uint8_t y, uint8_t text_size);
 
-  void draw_alert_message();
+  void set_body_message(const std::string& message);
+
+  void draw_body_message(uint8_t size = 1);
+
+  void add_canvas(canvas_func func, void* param);
+
+  joystick_event read_joystick();
+
+  Adafruit_SSD1306* get_display(){
+    return display;
+  }
 
 private :
 
@@ -39,16 +65,24 @@ private :
 
   uint8_t signal_level;
 
-  int clock;
-
   std::string header_message;
-  uint8_t header_message_pos;
-  uint8_t header_message_clock;
-  char header_buffer[HEADER_MESSAGE_MAX_SIZE + 1];
+  char header_buffer[SCROLL_MESSAGE_MAX_SIZE + 1];
 
   std::string body_message;
 
   bool alert_on;
+
+  //canvas
+  uint8_t selected_canvas;
+  std::vector<canvas_func> canvas;
+  std::vector<void *> canvas_param;
+
+  //joystick variables
+  bool joystick;
+  int joystick_x_pin;
+  int joystick_y_pin;
+  int joystick_sw_pin;
+
 };
 
 } // namespace utils
