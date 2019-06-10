@@ -43,6 +43,10 @@ struct Screen{
 
   void draw_alert(uint8_t x = 7, uint8_t y = 4);
 
+  void set_bluetooth(bool on=true);
+
+  void draw_bluetooth(uint8_t x = 95, uint8_t y = 0);
+
   void set_scrolling_message(const std::string& message);
 
   void draw_scrolling_message(uint8_t x, uint8_t y, uint8_t text_size);
@@ -71,6 +75,7 @@ private :
   std::string body_message;
 
   bool alert_on;
+  bool bluetooth;
 
   //canvas
   uint8_t selected_canvas;

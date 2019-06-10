@@ -10,6 +10,8 @@ Screen::Screen(Adafruit_SSD1306* display,
   this->display = display;
   this->signal_level = 0;
   this->alert_on = false;
+  this->bluetooth = false;
+
 
   this->joystick_x_pin = joystick_x_pin;
   this->joystick_y_pin = joystick_y_pin;
@@ -49,6 +51,9 @@ void Screen::render(){
     canvas[selected_canvas](this, canvas_param[selected_canvas]);
   }
 
+  if(bluetooth){
+    draw_bluetooth();
+  }
   draw_alert();
   draw_wifi_signal(signal_level);
   display->display();
@@ -169,6 +174,19 @@ void Screen::draw_alert(uint8_t x, uint8_t y){
     cycles = 0;
   }
   ++cycles;
+}
+
+
+void Screen::set_bluetooth(bool on){
+  bluetooth = on;
+}
+
+void Screen::draw_bluetooth(uint8_t x, uint8_t y){
+  display->drawLine(x    , y      , x    , y + 14, WHITE);
+  display->drawLine(x - 5, y + 2  , x + 5, y + 10, WHITE);
+  display->drawLine(x    , y + 14 , x + 5, y + 10, WHITE);
+  display->drawLine(x - 5, y + 12 , x + 5, y + 2 , WHITE);
+  display->drawLine(x    , y      , x + 5, y + 2 , WHITE);
 }
 
 
