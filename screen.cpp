@@ -195,6 +195,22 @@ void Screen::add_canvas(canvas_func func, void* param){
   canvas_param.push_back(param);
 }
 
+uint8_t Screen::signal_to_level(uint8_t signal){
+  if(signal < 10){
+    return 0;
+  }else if (signal >= 10 && signal < 20){
+    return 1;
+  }else if (signal >= 20 && signal < 40){
+    return 2;
+  }else if (signal >= 40 && signal < 60){
+    return 3;
+  }else if (signal >= 60 && signal < 80){
+    return 4;
+  }else if (signal >= 80){
+    return 5;
+  }
+}
+
 Screen::joystick_event Screen::read_joystick(){
   static uint8_t cycles = 0;
   static bool ev_detected = false;

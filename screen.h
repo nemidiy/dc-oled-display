@@ -8,7 +8,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-#define SCROLL_MESSAGE_MAX_SIZE 13
+#define SCROLL_MESSAGE_MAX_SIZE 12
 #define SCROLL_MESSAGE_CLOCK 10
 
 namespace gj {
@@ -56,6 +56,8 @@ struct Screen{
   void draw_body_message(uint8_t size = 1);
 
   void add_canvas(canvas_func func, void* param);
+
+  uint8_t signal_to_level(uint8_t signal);
 
   joystick_event read_joystick();
 
