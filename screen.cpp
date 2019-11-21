@@ -3,8 +3,6 @@
 using namespace gj::utils;
 
 Screen::Screen(Adafruit_SSD1306* display,
-              int joystick_x_pin,
-              int joystick_y_pin,
               int joystick_sw_pin){
 
   this->display = display;
@@ -13,15 +11,13 @@ Screen::Screen(Adafruit_SSD1306* display,
   this->bluetooth = false;
 
 
-  this->joystick_x_pin = joystick_x_pin;
-  this->joystick_y_pin = joystick_y_pin;
   this->joystick_sw_pin = joystick_sw_pin;
-  if (joystick_x_pin  == -1 ||
-      joystick_y_pin  == -1 ||
-      joystick_sw_pin == -1){
+  if (joystick_sw_pin == -1){
     joystick = false;
   }else{
     joystick = true;
+    joystick_bounce.attach(joystick_sw_pin, INPUT_PULLUP);
+    joystick_bounce.interval(10);
   }
 
   //let the dislpay initialize
@@ -39,9 +35,9 @@ Screen::Screen(Adafruit_SSD1306* display,
 void Screen::render(){
   //read joystick and move canvas
   joystick_event ev = read_joystick();
-  if(ev == RIGHT && selected_canvas == canvas.size() - 1){
+  if(ev == CLICK && selected_canvas == canvas.size() - 1){
     selected_canvas = 0;
-  }else if(ev == RIGHT){
+  }else if(ev == CLICK){
     ++selected_canvas;
   }
 
@@ -212,36 +208,14 @@ uint8_t Screen::signal_to_level(uint8_t signal){
 }
 
 Screen::joystick_event Screen::read_joystick(){
-  static uint8_t cycles = 0;
-  static bool ev_detected = false;
   joystick_event ev = NONE;
 
-  if(ev_detected && cycles < 10){
-    ++cycles;
-    return NONE;
-  }else if(ev_detected){
-    ev_detected = false;
-    cycles = 0;
-  }
+  joystick_bounce.update();
 
-  int joy_x = digitalRead(joystick_x_pin);
-  int joy_y = digitalRead(joystick_y_pin);
-  int joy_sw = digitalRead(joystick_sw_pin);
-
-  if(joy_x == 0){
-    ev = RIGHT;
-    ev_detected = true;
-  }else if(joy_y == 0){
-    ev = UP;
-    ev_detected = true;
-  }
-
-  if(joy_sw == 0){
-    pinMode(joystick_sw_pin, OUTPUT);
-    digitalWrite(joystick_sw_pin, HIGH);
-    pinMode(joystick_sw_pin, INPUT);
+  if(joystick_bounce.rose()){
+    Serial.println("CLICK DETECTED.");
     ev = CLICK;
-    ev_detected = true;
   }
+
   return ev;
 }

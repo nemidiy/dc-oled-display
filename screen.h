@@ -7,6 +7,8 @@
 
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Bounce2.h>
+
 
 #define SCROLL_MESSAGE_MAX_SIZE 12
 #define SCROLL_MESSAGE_CLOCK 10
@@ -29,8 +31,6 @@ struct Screen{
   typedef std::function<void (struct Screen *screen, void* param)> canvas_func;
 
   Screen(Adafruit_SSD1306* display,
-        int joystick_x_pin  = -1,
-        int joystick_y_pin  = -1,
         int joystick_sw_pin = -1);
 
   void render();
@@ -86,10 +86,8 @@ private :
 
   //joystick variables
   bool joystick;
-  int joystick_x_pin;
-  int joystick_y_pin;
   int joystick_sw_pin;
-
+  Bounce joystick_bounce;
 };
 
 } // namespace utils
